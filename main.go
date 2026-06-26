@@ -1,14 +1,25 @@
 // Command war plays the card game War on the command line.
 //
-// This is the program's entry point. In Go, the executable starts at the
-// func main() inside package main. Right now it's a placeholder so the repo
-// compiles and runs from the very first commit — the real game wiring lands
-// in a later phase once the internal/game package exists.
+// This is the program's entry point: execution begins at func main() in
+// package main. It stays deliberately tiny — all the real logic lives in the
+// internal/game package. main's only job is to wire up a game and press "go."
 package main
 
-import "fmt"
+import (
+	"time"
+
+	"war/internal/game"
+)
 
 func main() {
-	fmt.Println("War — coming together one phase at a time.")
-	fmt.Println("Run `go run .` after each phase to see it grow.")
+	// Seed from the clock for an unpredictable shuffle each run. (Pass a fixed
+	// number instead to replay the exact same match every time — that's what
+	// the tests in a later phase will do.)
+	seed := time.Now().UnixNano()
+
+	g := game.New("Player 1", "Player 2", seed)
+
+	// The cap guarantees the program ends even if a game drags on. With
+	// pot-shuffling enabled, real games finish well under this.
+	g.Play(100000)
 }
