@@ -1,0 +1,21 @@
+# ─── Go ───────────────────────────────────────────────
+# Compiled binaries. `go build` drops an executable named after the
+# module ("war") right here; we never commit build output — anyone can
+# rebuild it from source with `go build`.
+/war
+*.exe
+*.test          # binaries produced by `go test -c`
+*.out           # coverage/profile output (e.g. coverage.out)
+
+# `go test` and the race detector working files
+*.prof
+
+# ─── Editors / IDEs ──────────────────────────────────────
+# GoLand / IntelliJ project settings — machine-specific, not source.
+.idea/
+
+# VS Code (in case you switch editors mid-project)
+.vscode/
+
+# ─── macOS ────────────────────────────────────────────
+.DS_Store
