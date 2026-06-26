@@ -4,7 +4,10 @@
 // tiny — it just wires a game up and presses "go".
 package game
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // ─── Suit ────────────────────────────────────────────────────────────────
 //
@@ -90,4 +93,28 @@ func (c Card) String() string {
 		return fmt.Sprintf("%s of %s", name, c.Suit)
 	}
 	return fmt.Sprintf("%d of %s", c.Rank, c.Suit)
+}
+
+// MarshalJSON controls how a Card turns into JSON for the web API.
+//
+// This is json.Marshaler — the sibling of Stringer. Just as Stringer lets a
+// type say "here's how I print myself," Marshaler lets it say "here's how I
+// turn into JSON." Without it, the default encoding leaks the Go field names
+// and a raw integer suit: {"Rank":8,"Suit":2}. The browser wants tidy,
+// self-describing data instead: {"rank":8,"suit":"Hearts"}.
+//
+// We hand back the suit's NAME (via its Stringer) so the front-end never has
+// to know that Hearts is internally the integer 2 — the same "prettify at the
+// boundary" habit as Card.String. Implemented with a value receiver because,
+// like String, it only reads the card.
+func (c Card) MarshalJSON() ([]byte, error) {
+	// An anonymous struct with json tags is the cleanest way to define a
+	// one-off output shape. json.Marshal turns it into the bytes we return.
+	return json.Marshal(struct {
+		Rank int    `json:"rank"`
+		Suit string `json:"suit"`
+	}{
+		Rank: c.Rank,
+		Suit: c.Suit.String(),
+	})
 }

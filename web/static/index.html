@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>War — Go card game</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="table">
+    <h1>⚔️ WAR</h1>
+
+    <section class="scoreboard">
+      <div class="score" id="score-cpu">
+        <span class="who">Computer</span>
+        <span class="count" id="count-cpu">26</span>
+      </div>
+      <div class="vs">vs</div>
+      <div class="score" id="score-you">
+        <span class="who">You</span>
+        <span class="count" id="count-you">26</span>
+      </div>
+    </section>
+
+    <section class="felt">
+      <div class="slot">
+        <div class="card-area" id="card-cpu"><div class="card back"></div></div>
+        <div class="label">Computer</div>
+      </div>
+
+      <div class="slot">
+        <div class="card-area" id="card-you">
+          <!-- Your face-down card. Click it to flip. -->
+          <button class="card back clickable" id="flip-btn" aria-label="Flip your card"></button>
+        </div>
+        <div class="label">You — click your card</div>
+      </div>
+    </section>
+
+    <p class="message" id="message">Click your card to play the first round.</p>
+
+    <button class="new-game" id="new-game">New Game</button>
+  </main>
+
+  <script src="/static/game.js"></script>
+</body>
+</html>

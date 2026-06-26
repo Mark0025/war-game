@@ -15,9 +15,14 @@ about a concept, not about the game being clever.
 ## How to run it
 
 ```bash
-go run .          # play one game with a random shuffle
-go test ./...     # run the test suite (added in a later phase)
+go run .                  # auto-play one game in the terminal
+go run ./cmd/warserver    # play in the browser → http://localhost:8080
+go test ./...             # run the test suite (added in a later phase)
 ```
+
+The **browser version** is a real game: poker-felt table, click your card to
+flip, live score, war animation, and a New Game button. The Go engine is the
+single source of truth — the browser only renders what the server decides.
 
 ## The rules of War (plain English)
 
@@ -50,13 +55,23 @@ Each phase is one branch → one pull request → one review → one merge.
 ```
 war/
 ├── go.mod
-├── main.go                 # entry point: wire up a game and play it
-└── internal/
-    └── game/               # the game lives here; `internal/` = private to this module
-        ├── card.go         # Card, Suit, Rank — the dumb data
-        ├── deck.go         # build 52, shuffle, deal
-        ├── player.go       # a hand as a queue (draw top, win to bottom)
-        └── game.go         # the round loop + war resolution
+├── main.go                 # CLI entry point: auto-play a game in the terminal
+├── cmd/
+│   └── warserver/
+│       └── main.go         # web entry point: HTTP server on :8080
+├── internal/
+│   └── game/               # the game lives here; `internal/` = private to this module
+│       ├── card.go         # Card, Suit, Rank — the dumb data (+ JSON for the web)
+│       ├── deck.go         # build 52, shuffle, deal
+│       ├── player.go       # a hand as a queue (draw top, win to bottom)
+│       ├── game.go         # the round loop + war resolution (CLI, prints)
+│       └── step.go         # step-wise, silent, data-returning engine (web)
+└── web/
+    ├── server.go           # net/http server, JSON API, embeds the front-end
+    └── static/             # the browser UI (baked into the binary via //go:embed)
+        ├── index.html
+        ├── style.css       # poker-felt table
+        └── game.js         # calls the Go API, renders each round
 ```
 
 > `internal/` is a Go convention: packages under it can only be imported by
