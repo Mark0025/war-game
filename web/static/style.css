@@ -1,0 +1,131 @@
+/* Poker-felt War table. Plain CSS — no framework, so nothing hides the basics. */
+
+:root {
+  --felt: #1b6e3c;          /* poker-table green */
+  --felt-dark: #14552e;
+  --card-bg: #fdfdf6;
+  --card-red: #c0392b;
+  --card-black: #1c1c1c;
+  --gold: #e8c66b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* radial gradient gives the felt a soft spotlight in the middle */
+  background: radial-gradient(circle at center, var(--felt) 0%, var(--felt-dark) 100%);
+  color: #fff;
+}
+
+.table {
+  width: min(680px, 92vw);
+  text-align: center;
+  padding: 28px;
+}
+
+h1 {
+  font-size: 2.4rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 18px;
+  color: var(--gold);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Scoreboard ─────────────────────────────────────── */
+.scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  margin-bottom: 26px;
+}
+.score {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 10px 22px;
+  min-width: 120px;
+}
+.score .who { display: block; font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.08em; }
+.score .count { display: block; font-size: 2rem; font-weight: 700; color: var(--gold); }
+.vs { opacity: 0.6; font-style: italic; }
+
+/* ── Felt / cards ───────────────────────────────────── */
+.felt {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin-bottom: 22px;
+}
+.slot { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.label { font-size: 0.85rem; opacity: 0.85; }
+
+.card-area { perspective: 700px; }
+
+.card {
+  width: 104px;
+  height: 150px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--card-bg);
+  color: var(--card-black);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+  border: none;
+  user-select: none;
+}
+
+/* face-down card: patterned back */
+.card.back {
+  background:
+    repeating-linear-gradient(45deg, #2b4f8a 0 10px, #1f3c6b 10px 20px);
+  color: transparent;
+}
+
+.card.clickable { cursor: pointer; transition: transform 0.12s ease; }
+.card.clickable:hover { transform: translateY(-6px); }
+.card.clickable:disabled { cursor: default; opacity: 0.7; transform: none; }
+
+.card .rank { font-size: 1.7rem; }
+.card .suit { font-size: 1.7rem; }
+.card.red { color: var(--card-red); }
+
+/* little flip pop when a card reveals */
+@keyframes pop { 0% { transform: scale(0.7); } 100% { transform: scale(1); } }
+.card.revealed { animation: pop 0.18s ease; }
+
+/* war shimmer */
+.felt.war { animation: warflash 0.5s ease; }
+@keyframes warflash {
+  0%, 100% { filter: none; }
+  50% { filter: brightness(1.5) drop-shadow(0 0 12px var(--gold)); }
+}
+
+/* ── Message + buttons ──────────────────────────────── */
+.message {
+  min-height: 1.6em;
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+}
+.message.win { color: var(--gold); font-weight: 700; font-size: 1.3rem; }
+
+.new-game {
+  background: var(--gold);
+  color: #2a2200;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+.new-game:hover { filter: brightness(1.05); }
