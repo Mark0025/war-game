@@ -1,0 +1,55 @@
+# Continuous Integration for War.
+#
+# This runs on every push and every pull request. Once it's a REQUIRED status
+# check (set on the branch protection rule), a red run here physically blocks
+# merging to main — broken code can't get in, and you don't have to remember to
+# check. That's the "automate it, track it" payoff.
+
+name: CI
+
+# When to run.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A job is a set of steps that run on one fresh machine ("runner").
+jobs:
+  test:
+    name: build • vet • test
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Check out the repo's code onto the runner.
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # 2. Install Go. We pin a version close to what we develop on.
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+          cache: true # cache modules between runs for speed
+
+      # 3. gofmt: fail if any file isn't formatted. `gofmt -l .` lists
+      #    unformatted files; if that list is non-empty, we exit 1.
+      - name: Check formatting (gofmt)
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "These files are not gofmt-formatted:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      # 4. go vet: catches suspicious constructs the compiler allows.
+      - name: Vet
+        run: go vet ./...
+
+      # 5. Build everything (both binaries + packages).
+      - name: Build
+        run: go build ./...
+
+      # 6. Test with the race detector. -race catches data races like a missing
+      #    mutex on the web server's shared game state.
+      - name: Test (with race detector)
+        run: go test -race ./...
