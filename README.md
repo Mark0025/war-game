@@ -1,5 +1,11 @@
 # War — a Go + Git learning project
 
+## About
+- **What it is:** The card game War, playable in a terminal or browser, built step by step to learn the Go language and a pull-request Git workflow.
+- **Business:** learning
+- **Status:** inactive since 2026-06
+- **Source:** agent research 2026-11-04
+
 A command-line implementation of the card game **War**, built deliberately
 slowly to learn two things at once:
 
